@@ -1,0 +1,112 @@
+---
+title: "R Practice"
+output: 
+  html_document:
+    toc: true # table of content true
+    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    df_print: paged
+  # 
+  # number_sections: true  ## if you want number sections at each table header
+  # theme: united  # many options for theme, this one is my favorite.
+  # highlight: tango  # specifies the syntax highlighting style
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r class.source="bg-danger", class.output="bg-warning"}
+#setwd("type/here/the/address/")
+setwd("C:/Users/soumy/OneDrive/Desktop/assignments/s and p")
+```
+
+
+#### just to make sure that the file is there let's see which files are in this directory<br>
+
+```{r class.source="bg-danger", class.output="bg-warning"}
+#setwd("C:/Users/soumy/OneDrive/Desktop/assignments/s and p")
+list.files()
+```
+
+# Problem Set R
+
+### Now is yoiur turn to practice!!
+
+#### We are using a new Dataset, This is a frequently used dataset for multiple applications in statistics and machine learning. This dataset is deposited in a website that is pretty useful in bioinformatics to look for tutorials, datasets and advice Kaggle (https://www.kaggle.com)
+
+#### Go to https://www.kaggle.com/saurabh00007/diabetescsv and download the csv file
+
+#### This dataset consists on clinical variables for 768 patients to evaluate a few variables to predict whether a patient has diabetes.
+library(dplyr)
+
+#### Please write the R code necessary to run the next items:
+
+#### 1. Load the dataset and show the first 5 lines<br>
+```{r}
+my_data <- read.csv("diabetes.csv")
+head(my_data, 5)
+```
+
+#### 2. How many patients have diabetes?<br>
+```{r}
+num_diabetes <- sum(my_data$Outcome == 1)
+print(paste("Number of patients with diabetes:", num_diabetes))
+```
+
+#### 3. How many patients have diabetes that are older than 45?<br>
+```{r}
+num_diabetes_over_45 <- sum(my_data$Outcome == 1 & my_data$Age > 45)
+print(paste("Number of patients with diabetes older than 45:", num_diabetes_over_45))
+```
+#### 4. What is the mean and variance of glucose levels for individuals without diabetes<br>
+```{r}
+mean_glucose_no_diabetes <- mean(my_data$Glucose[my_data$Outcome == 0], na.rm = TRUE)
+var_glucose_no_diabetes <- var(my_data$Glucose[my_data$Outcome == 0], na.rm = TRUE)
+print(paste("Mean glucose (no diabetes):", mean_glucose_no_diabetes))
+print(paste("Variance of glucose (no diabetes):", var_glucose_no_diabetes))
+```
+
+#### 5. Create a new discrete variable that has 1 if the individual has diabetes and high blood pressure (above 100), 2 if an indivual has diabetes and low blood pressure and 3 if the individual does not have diabetes.<br>
+```{r}
+my_data$Diabetes_BP_Category <- ifelse(my_data$Outcome == 1 & my_data$BloodPressure > 100, 1, 
+                             ifelse(my_data$Outcome == 1 & my_data$BloodPressure <= 100, 2, 
+                                    ifelse(my_data$Outcome == 0, 3, NA)))
+
+table(my_data$Diabetes_BP_Category)
+```
+
+#### 6. Construct two plots of the distribution of BMI for individuals with diabetes and without diabetes<br><br>
+
+```{r}
+library(ggplot2)
+
+# Filtering the data for individuals with and without diabetes
+diabetes_data <- my_data[my_data$Outcome == 1, ]
+no_diabetes_data <- my_data[my_data$Outcome == 0, ]
+
+par(mfrow=c(1, 2))  # Set up a 1x2 grid for side-by-side plots
+
+# Plot for individuals with diabetes
+hist(diabetes_data$BMI, 
+     main="BMI Distribution for Individuals with Diabetes", 
+     xlab="BMI", 
+     col="red", 
+     border="black", 
+     breaks=20)
+
+# Plot for individuals without diabetes
+hist(no_diabetes_data$BMI, 
+     main="BMI Distribution for Individuals without Diabetes", 
+     xlab="BMI", 
+     col="blue", 
+     border="black", 
+     breaks=20)
+```
+
+
+<hr class="rounded">
+
